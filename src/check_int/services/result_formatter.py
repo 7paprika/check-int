@@ -14,6 +14,10 @@ def flatten_comparison_results(results: list[IntegrityCheckResult]) -> list[dict
                     "master_value": comparison.master_value,
                     "pid_value": comparison.pid_value,
                     "datasheet_value": comparison.datasheet_value,
+                    "pid_image_path": comparison.pid_evidence.image_path if comparison.pid_evidence else None,
+                    "datasheet_image_path": (
+                        comparison.datasheet_evidence.image_path if comparison.datasheet_evidence else None
+                    ),
                 }
             )
 

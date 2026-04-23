@@ -10,6 +10,7 @@ class DocumentEvidence:
     image_path: str | None = None
     raw_text: str | None = None
     note: str | None = None
+    confidence: float | None = None
 
 
 @dataclass(slots=True)
