@@ -1,7 +1,7 @@
 from check_int.adapters.ocr_engine import StubOcrEngine
 from check_int.adapters.pdf_loader import MuPdfLoader, PageImage, StubPdfLoader
 from check_int.adapters.structured_extractor import StubStructuredExtractor
-from check_int.adapters.vision_detector import DetectedRegion, StubVisionDetector
+from check_int.adapters.vision_detector import DetectedRegion, StubVisionDetector, YoloVisionDetector
 
 __all__ = [
     "DetectedRegion",
@@ -11,4 +11,5 @@ __all__ = [
     "StubPdfLoader",
     "StubStructuredExtractor",
     "StubVisionDetector",
+    "YoloVisionDetector",
 ]
