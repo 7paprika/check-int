@@ -42,7 +42,8 @@ def test_result_table_populates_rows_and_highlights_mismatch(qtbot) -> None:
 
     assert widget.rowCount() == 2
     assert widget.item(0, 0).text() == "P-101"
-    assert widget.item(1, 1).text() == "design_pressure"
+    assert widget.item(1, 1).text() == "Design Pressure"
+    assert widget.item(1, 2).text() == "Mismatch"
     assert widget.item(1, 5).text() == "12 bar"
 
     mismatch_color = widget.item(1, 5).background().color()

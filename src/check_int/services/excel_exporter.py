@@ -6,7 +6,28 @@ from openpyxl.styles import PatternFill
 
 
 HIGHLIGHT_FILL = PatternFill(fill_type="solid", fgColor="FFF1B3")
-HEADERS = ["tag_no", "field_name", "status", "master_value", "pid_value", "datasheet_value"]
+HEADERS = ["Tag No", "Field", "Status", "Master", "P&ID", "Datasheet"]
+
+FIELD_LABELS = {
+    "tag_no": "Tag No",
+    "service": "Service",
+    "material": "Material",
+    "capacity": "Capacity",
+    "size": "Size",
+    "model": "Model",
+    "design_temperature": "Design Temperature",
+    "design_pressure": "Design Pressure",
+    "operating_pressure": "Operating Pressure",
+    "operating_temperature": "Operating Temperature",
+}
+
+STATUS_LABELS = {
+    "matched": "Matched",
+    "mismatch": "Mismatch",
+    "missing_target": "Missing Target",
+    "missing_source": "Missing Source",
+    "unreviewed": "Unreviewed",
+}
 
 
 def export_comparison_rows_to_excel(
@@ -21,7 +42,16 @@ def export_comparison_rows_to_excel(
     sheet.append(HEADERS)
 
     for row in rows:
-        sheet.append([row.get(header) for header in HEADERS])
+        sheet.append(
+            [
+                row.get("tag_no"),
+                FIELD_LABELS.get(row.get("field_name") or "", row.get("field_name") or ""),
+                STATUS_LABELS.get(row.get("status") or "", row.get("status") or ""),
+                row.get("master_value"),
+                row.get("pid_value"),
+                row.get("datasheet_value"),
+            ]
+        )
         current_row = sheet.max_row
         if row.get("status") == "mismatch":
             for column_index in range(4, 7):

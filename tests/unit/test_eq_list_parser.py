@@ -16,6 +16,7 @@ COMMON_FIELDS = {
     "material": "SS316",
     "design_pressure": "12 bar",
     "design_temperature": "90 C",
+    "operating_pressure": "8 bar",
     "operating_temperature": "75 C",
     "page_no": 3,
 }
@@ -32,6 +33,7 @@ def test_map_structured_row_to_equipment_record_creates_common_domain_object() -
     assert record.tag_no == "P-201"
     assert record.equipment_name == "Booster Pump"
     assert record.design_pressure == "12 bar"
+    assert record.operating_pressure == "8 bar"
     assert record.capacity == "120 m3/h"
     assert record.model == "BP-120"
     assert record.operating_temperature == "75 C"

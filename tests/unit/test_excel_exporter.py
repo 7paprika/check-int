@@ -29,9 +29,12 @@ def test_export_comparison_rows_to_excel_writes_rows_and_highlights_mismatch(tmp
     workbook = load_workbook(output_path)
     sheet = workbook["Integrity Report"]
 
+    assert sheet["A1"].value == "Tag No"
+    assert sheet["B1"].value == "Field"
+    assert sheet["C1"].value == "Status"
     assert sheet["A2"].value == "P-601"
-    assert sheet["B3"].value == "material"
-    assert sheet["C3"].value == "mismatch"
+    assert sheet["B3"].value == "Material"
+    assert sheet["C3"].value == "Mismatch"
     assert sheet["E3"].value == "CS"
     assert sheet["F3"].value == "SS316"
     assert sheet["E3"].fill.fill_type == "solid"

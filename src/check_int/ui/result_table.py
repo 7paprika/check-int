@@ -15,6 +15,27 @@ class ResultTableWidget(QTableWidget):
         "Datasheet",
     ]
 
+    FIELD_LABELS = {
+        "tag_no": "Tag No",
+        "service": "Service",
+        "material": "Material",
+        "capacity": "Capacity",
+        "size": "Size",
+        "model": "Model",
+        "design_temperature": "Design Temperature",
+        "design_pressure": "Design Pressure",
+        "operating_pressure": "Operating Pressure",
+        "operating_temperature": "Operating Temperature",
+    }
+
+    STATUS_LABELS = {
+        "matched": "Matched",
+        "mismatch": "Mismatch",
+        "missing_target": "Missing Target",
+        "missing_source": "Missing Source",
+        "unreviewed": "Unreviewed",
+    }
+
     def __init__(self, parent=None) -> None:
         super().__init__(0, len(self.HEADERS), parent)
         self._rows: list[dict[str, str | None]] = []
@@ -29,8 +50,8 @@ class ResultTableWidget(QTableWidget):
         for row_index, row in enumerate(rows):
             values = [
                 row.get("tag_no"),
-                row.get("field_name"),
-                row.get("status"),
+                self.FIELD_LABELS.get(row.get("field_name") or "", row.get("field_name") or ""),
+                self.STATUS_LABELS.get(row.get("status") or "", row.get("status") or ""),
                 row.get("master_value"),
                 row.get("pid_value"),
                 row.get("datasheet_value"),

@@ -30,6 +30,7 @@ class HybridStructuredExtractor:
         "model": [r"MODEL\s*[:=]\s*(.+)"],
         "design_pressure": [r"DESIGN\s*PRESSURE\s*[:=]\s*(.+)"],
         "design_temperature": [r"DESIGN\s*TEMPERATURE\s*[:=]\s*(.+)"],
+        "operating_pressure": [r"OPERATING\s*PRESSURE\s*[:=]\s*(.+)"],
         "operating_temperature": [r"OPERATING\s*TEMPERATURE\s*[:=]\s*(.+)"],
         "equipment_name": [r"EQUIPMENT(?:\s*NAME)?\s*[:=]\s*(.+)"],
     }

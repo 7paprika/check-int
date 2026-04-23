@@ -12,6 +12,7 @@ FIELDS = [
     "model",
     "design_temperature",
     "design_pressure",
+    "operating_pressure",
     "operating_temperature",
 ]
 
@@ -29,6 +30,7 @@ def make_record(document_type: DocumentType, tag_no: str, **fields: str | None) 
         material=fields.get("material"),
         design_pressure=fields.get("design_pressure"),
         design_temperature=fields.get("design_temperature"),
+        operating_pressure=fields.get("operating_pressure"),
         operating_temperature=fields.get("operating_temperature"),
         source_file=f"{document_type.value}.pdf",
     )
@@ -45,6 +47,7 @@ def test_compare_equipment_records_marks_expanded_field_states() -> None:
             model="PMP-100",
             design_temperature="120 C",
             design_pressure="10 BAR",
+            operating_pressure="8 bar",
             operating_temperature="90 C",
             material="SS316",
         )
@@ -59,6 +62,7 @@ def test_compare_equipment_records_marks_expanded_field_states() -> None:
             model="PMP-100A",
             design_temperature="120 C",
             design_pressure="10 bar",
+            operating_pressure="8 bar",
             operating_temperature="95 C",
             material="CS",
         )
@@ -73,6 +77,7 @@ def test_compare_equipment_records_marks_expanded_field_states() -> None:
             model="PMP-100",
             design_temperature="120 C",
             design_pressure=None,
+            operating_pressure="8 bar",
             operating_temperature="90 C",
             material="SS316",
         )
@@ -89,11 +94,12 @@ def test_compare_equipment_records_marks_expanded_field_states() -> None:
     assert by_field["capacity"].status is ComparisonStatus.MATCHED
     assert by_field["size"].status is ComparisonStatus.MATCHED
     assert by_field["design_temperature"].status is ComparisonStatus.MATCHED
+    assert by_field["operating_pressure"].status is ComparisonStatus.MATCHED
     assert by_field["model"].status is ComparisonStatus.MISMATCH
     assert by_field["design_pressure"].status is ComparisonStatus.MISSING_TARGET
     assert by_field["operating_temperature"].status is ComparisonStatus.MISMATCH
     assert by_field["material"].status is ComparisonStatus.MISMATCH
-    assert result.summary[ComparisonStatus.MATCHED] == 4
+    assert result.summary[ComparisonStatus.MATCHED] == 5
     assert result.summary[ComparisonStatus.MISSING_TARGET] == 1
     assert result.summary[ComparisonStatus.MISMATCH] == 3
 
@@ -109,6 +115,7 @@ def test_compare_equipment_records_adds_master_rows_even_when_related_documents_
             model="N2-50",
             design_temperature="80 C",
             design_pressure="5 bar",
+            operating_pressure="4 bar",
             operating_temperature="55 C",
             material="CS",
         )
@@ -126,6 +133,7 @@ def test_compare_equipment_records_adds_master_rows_even_when_related_documents_
         "model": ComparisonStatus.MISSING_TARGET,
         "design_temperature": ComparisonStatus.MISSING_TARGET,
         "design_pressure": ComparisonStatus.MISSING_TARGET,
+        "operating_pressure": ComparisonStatus.MISSING_TARGET,
         "operating_temperature": ComparisonStatus.MISSING_TARGET,
     }
 
@@ -141,6 +149,7 @@ def test_flatten_comparison_results_returns_rows_for_ui_tables() -> None:
             model="AIR-30",
             design_temperature="60 C",
             design_pressure="6 bar",
+            operating_pressure="5 bar",
             operating_temperature="45 C",
             material="SS304",
         )
@@ -155,6 +164,7 @@ def test_flatten_comparison_results_returns_rows_for_ui_tables() -> None:
             model="AIR-30",
             design_temperature="60 C",
             design_pressure="7 bar",
+            operating_pressure="5 bar",
             operating_temperature="45 C",
             material="SS304",
         )
@@ -169,6 +179,7 @@ def test_flatten_comparison_results_returns_rows_for_ui_tables() -> None:
             model="AIR-30",
             design_temperature="60 C",
             design_pressure="6 bar",
+            operating_pressure="5 bar",
             operating_temperature="45 C",
             material="SS304",
         )

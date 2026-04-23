@@ -26,6 +26,7 @@ class EquipmentRecord:
     material: str | None = None
     design_pressure: str | None = None
     design_temperature: str | None = None
+    operating_pressure: str | None = None
     operating_temperature: str | None = None
     source_file: str = ""
     page_no: int | None = None

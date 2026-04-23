@@ -23,6 +23,7 @@ def map_structured_row_to_equipment_record(
         material=_clean_value(row.get("material")),
         design_pressure=_clean_value(row.get("design_pressure")),
         design_temperature=_clean_value(row.get("design_temperature")),
+        operating_pressure=_clean_value(row.get("operating_pressure")),
         operating_temperature=_clean_value(row.get("operating_temperature")),
         source_file=source_file,
         page_no=_clean_int(row.get("page_no")),

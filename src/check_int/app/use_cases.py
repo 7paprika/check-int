@@ -17,6 +17,7 @@ DEFAULT_COMPARE_FIELDS = [
     "model",
     "design_temperature",
     "design_pressure",
+    "operating_pressure",
     "operating_temperature",
 ]
 
