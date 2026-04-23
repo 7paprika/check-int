@@ -1,15 +1,20 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from pathlib import Path
 from PyInstaller.utils.hooks import collect_submodules
+
+project_root = Path(SPEC).resolve().parent.parent
+src_root = project_root / 'src'
+docs_root = project_root / 'docs'
 
 hiddenimports = collect_submodules('check_int')
 
 a = Analysis(
-    ['src/check_int/main.py'],
-    pathex=['src'],
+    [str(src_root / 'check_int' / 'main.py')],
+    pathex=[str(src_root)],
     binaries=[],
     datas=[
-        ('docs', 'docs'),
+        (str(docs_root), 'docs'),
     ],
     hiddenimports=hiddenimports,
     hookspath=[],
