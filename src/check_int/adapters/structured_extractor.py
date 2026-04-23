@@ -25,8 +25,12 @@ class HybridStructuredExtractor:
         "tag_no": [r"TAG(?:\s*NO)?\s*[:=]\s*(.+)"],
         "service": [r"SERVICE\s*[:=]\s*(.+)"],
         "material": [r"MATERIAL\s*[:=]\s*(.+)"],
+        "capacity": [r"CAPACITY\s*[:=]\s*(.+)"],
+        "size": [r"SIZE\s*[:=]\s*(.+)"],
+        "model": [r"MODEL\s*[:=]\s*(.+)"],
         "design_pressure": [r"DESIGN\s*PRESSURE\s*[:=]\s*(.+)"],
         "design_temperature": [r"DESIGN\s*TEMPERATURE\s*[:=]\s*(.+)"],
+        "operating_temperature": [r"OPERATING\s*TEMPERATURE\s*[:=]\s*(.+)"],
         "equipment_name": [r"EQUIPMENT(?:\s*NAME)?\s*[:=]\s*(.+)"],
     }
 

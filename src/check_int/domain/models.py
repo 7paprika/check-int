@@ -19,11 +19,14 @@ class EquipmentRecord:
     tag_no: str
     equipment_name: str | None = None
     service: str | None = None
+    capacity: str | None = None
     size: str | None = None
+    model: str | None = None
     rating: str | None = None
     material: str | None = None
     design_pressure: str | None = None
     design_temperature: str | None = None
+    operating_temperature: str | None = None
     source_file: str = ""
     page_no: int | None = None
     evidence: list[DocumentEvidence] = field(default_factory=list)

@@ -11,8 +11,13 @@ from check_int.services.result_formatter import flatten_comparison_results
 
 DEFAULT_COMPARE_FIELDS = [
     "service",
-    "design_pressure",
     "material",
+    "capacity",
+    "size",
+    "model",
+    "design_temperature",
+    "design_pressure",
+    "operating_temperature",
 ]
 
 
