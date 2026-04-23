@@ -5,6 +5,7 @@ from check_int.services.comparator import compare_equipment_records
 from check_int.services.datasheet_parser import parse_datasheet_rows
 from check_int.services.eq_list_parser import parse_eq_list
 from check_int.services.pid_parser import parse_pid_rows
+from check_int.services.pipeline import DocumentProcessingPipeline
 from check_int.services.result_formatter import flatten_comparison_results
 
 
@@ -26,6 +27,24 @@ class IntegrityCheckUseCase:
         self.pid_pipeline = pid_pipeline
         self.datasheet_pipeline = datasheet_pipeline
         self.compare_fields = compare_fields or DEFAULT_COMPARE_FIELDS
+
+    @classmethod
+    def from_adapter_factories(
+        cls,
+        *,
+        pid_pipeline_factory,
+        datasheet_pipeline_factory,
+        compare_fields: list[str] | None = None,
+    ):
+        return cls(
+            pid_pipeline=pid_pipeline_factory(),
+            datasheet_pipeline=datasheet_pipeline_factory(),
+            compare_fields=compare_fields,
+        )
+
+    @staticmethod
+    def build_pipeline(*, loader, detector, ocr_engine, structured_extractor) -> DocumentProcessingPipeline:
+        return DocumentProcessingPipeline(loader, detector, ocr_engine, structured_extractor)
 
     def run(
         self,
