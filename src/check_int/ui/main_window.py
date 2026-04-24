@@ -8,7 +8,7 @@ from check_int.ui.result_table import ResultTableWidget
 
 
 class MainWindow(QMainWindow):
-    def __init__(self) -> None:
+    def __init__(self, *, use_case=None, report_exporter=None) -> None:
         super().__init__()
         self.setWindowTitle("LEDIC - Check Int")
         self.resize(1280, 800)
@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.status_log)
         self.setCentralWidget(central)
 
-        self.controller = MainWindowController(self)
+        self.controller = MainWindowController(self, use_case=use_case, report_exporter=report_exporter)
         self.append_status("LEDIC UI 초기화 완료")
 
     def append_status(self, message: str) -> None:

@@ -1,5 +1,10 @@
 from pathlib import Path
 
+from check_int.adapters.ocr_engine import PaddleOcrEngine
+from check_int.adapters.pdf_loader import MuPdfLoader
+from check_int.adapters.structured_extractor import HybridStructuredExtractor
+from check_int.adapters.vision_detector import StubVisionDetector
+from check_int.config import AppConfig
 from check_int.domain.enums import DocumentType
 from check_int.services.comparator import compare_equipment_records
 from check_int.services.datasheet_parser import parse_datasheet_rows
@@ -84,3 +89,19 @@ class IntegrityCheckUseCase:
                 fields=self.compare_fields,
             )
         )
+
+
+def build_default_use_case(config: AppConfig) -> IntegrityCheckUseCase:
+    pid_pipeline = _build_local_pdf_pipeline(config, document_cache_name="pid")
+    datasheet_pipeline = _build_local_pdf_pipeline(config, document_cache_name="datasheet")
+    return IntegrityCheckUseCase(pid_pipeline=pid_pipeline, datasheet_pipeline=datasheet_pipeline)
+
+
+def _build_local_pdf_pipeline(config: AppConfig, *, document_cache_name: str) -> DocumentProcessingPipeline:
+    cache_dir = config.artifacts_dir / document_cache_name
+    return DocumentProcessingPipeline(
+        loader=MuPdfLoader(output_dir=cache_dir / "pages"),
+        detector=StubVisionDetector(),
+        ocr_engine=PaddleOcrEngine(),
+        structured_extractor=HybridStructuredExtractor(),
+    )

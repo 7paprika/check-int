@@ -18,6 +18,11 @@ class _FakeUseCase:
         ]
 
 
+class _FailingUseCase:
+    def run(self, *, eq_list_path, pid_path, datasheet_path):
+        raise RuntimeError("OCR engine is not installed")
+
+
 class _FakeExporter:
     def __init__(self):
         self.called_with = None
@@ -28,14 +33,13 @@ class _FakeExporter:
         return Path(output_path)
 
 
-def test_main_window_controller_runs_comparison_and_saves_report(qtbot, tmp_path) -> None:
-    window = MainWindow()
-    qtbot.addWidget(window)
-
+def test_main_window_accepts_use_case_and_runs_comparison(qtbot, tmp_path) -> None:
     fake_use_case = _FakeUseCase()
     fake_exporter = _FakeExporter()
-    controller = MainWindowController(window, use_case=fake_use_case, report_exporter=fake_exporter)
-    window.controller = controller
+    window = MainWindow(use_case=fake_use_case, report_exporter=fake_exporter)
+    qtbot.addWidget(window)
+
+    controller = window.controller
 
     window.file_panel.eq_list_path.setText(str(tmp_path / "eq.xlsx"))
     window.file_panel.pid_path.setText(str(tmp_path / "pid.pdf"))
@@ -52,6 +56,20 @@ def test_main_window_controller_runs_comparison_and_saves_report(qtbot, tmp_path
     assert fake_exporter.called_with is not None
     assert Path(fake_exporter.called_with[1]).exists()
     assert "리포트 저장 완료" in window.status_log.toPlainText()
+
+
+def test_main_window_controller_reports_use_case_errors(qtbot, tmp_path) -> None:
+    window = MainWindow(use_case=_FailingUseCase())
+    qtbot.addWidget(window)
+    window.file_panel.eq_list_path.setText(str(tmp_path / "eq.xlsx"))
+    window.file_panel.pid_path.setText(str(tmp_path / "pid.pdf"))
+    window.file_panel.datasheet_path.setText(str(tmp_path / "datasheet.pdf"))
+
+    window.controller.run_comparison()
+
+    assert window.result_table.rowCount() == 0
+    assert "비교 실행 실패" in window.status_log.toPlainText()
+    assert "OCR engine is not installed" in window.status_log.toPlainText()
 
 
 def test_main_window_controller_requires_paths_before_run_or_save(qtbot) -> None:

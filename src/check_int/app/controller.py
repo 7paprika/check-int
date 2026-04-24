@@ -29,11 +29,15 @@ class MainWindowController(QObject):
             self.window.append_status("세 문서 경로를 모두 선택해야 합니다.")
             return
 
-        rows = self.use_case.run(
-            eq_list_path=eq_list_path,
-            pid_path=pid_path,
-            datasheet_path=datasheet_path,
-        )
+        try:
+            rows = self.use_case.run(
+                eq_list_path=eq_list_path,
+                pid_path=pid_path,
+                datasheet_path=datasheet_path,
+            )
+        except Exception as exc:
+            self.window.append_status(f"비교 실행 실패: {exc}")
+            return
         self.load_rows(rows)
 
     def save_report(self) -> None:
