@@ -1,3 +1,4 @@
+from collections import Counter
 from pathlib import Path
 
 from openpyxl import Workbook
@@ -6,7 +7,17 @@ from openpyxl.styles import PatternFill
 
 
 HIGHLIGHT_FILL = PatternFill(fill_type="solid", fgColor="FFF1B3")
-HEADERS = ["Tag No", "Field", "Status", "Master", "P&ID", "Datasheet"]
+HEADERS = [
+    "Tag No",
+    "Field",
+    "Status",
+    "Master",
+    "P&ID",
+    "Datasheet",
+    "Evidence Note",
+    "P&ID Evidence",
+    "Datasheet Evidence",
+]
 
 FIELD_LABELS = {
     "tag_no": "Tag No",
@@ -32,29 +43,36 @@ STATUS_LABELS = {
 
 
 def export_comparison_rows_to_excel(
-    rows: list[dict[str, str | None]],
+    rows: list[dict[str, object | None]],
     output_path: str | Path,
     *,
     embed_images: bool = False,
+    mismatch_only: bool = False,
 ) -> Path:
+    export_rows = _filter_rows(rows, mismatch_only=mismatch_only)
     workbook = Workbook()
     sheet = workbook.active
     sheet.title = "Integrity Report"
+    _write_summary_sheet(workbook, export_rows)
     sheet.append(HEADERS)
+    _apply_column_widths(sheet)
 
-    for row in rows:
+    for row in export_rows:
         sheet.append(
             [
                 row.get("tag_no"),
-                FIELD_LABELS.get(row.get("field_name") or "", row.get("field_name") or ""),
-                STATUS_LABELS.get(row.get("status") or "", row.get("status") or ""),
+                FIELD_LABELS.get(str(row.get("field_name") or ""), str(row.get("field_name") or "")),
+                STATUS_LABELS.get(str(row.get("status") or ""), str(row.get("status") or "")),
                 row.get("master_value"),
                 row.get("pid_value"),
                 row.get("datasheet_value"),
+                _evidence_note(row),
+                row.get("pid_image_path"),
+                row.get("datasheet_image_path"),
             ]
         )
         current_row = sheet.max_row
-        if row.get("status") == "mismatch":
+        if row.get("status") in {"mismatch", "duplicate_tag"}:
             for column_index in range(4, 7):
                 sheet.cell(row=current_row, column=column_index).fill = HIGHLIGHT_FILL
         if embed_images:
@@ -65,18 +83,65 @@ def export_comparison_rows_to_excel(
     return output
 
 
-def _embed_row_images(sheet, row: dict[str, str | None], current_row: int) -> None:
+def _filter_rows(rows: list[dict[str, object | None]], *, mismatch_only: bool) -> list[dict[str, object | None]]:
+    if not mismatch_only:
+        return list(rows)
+    return [row for row in rows if row.get("status") != "matched"]
+
+
+def _write_summary_sheet(workbook: Workbook, rows: list[dict[str, object | None]]) -> None:
+    summary = workbook.create_sheet("Summary", 0)
+    summary.append(["Status", "Count"])
+    counts = Counter(str(row.get("status") or "") for row in rows)
+    for status, count in sorted(counts.items()):
+        summary.append([STATUS_LABELS.get(status, status), count])
+    summary.column_dimensions["A"].width = 20
+    summary.column_dimensions["B"].width = 12
+
+
+def _apply_column_widths(sheet) -> None:
+    widths = {
+        "A": 16,
+        "B": 24,
+        "C": 18,
+        "D": 20,
+        "E": 20,
+        "F": 20,
+        "G": 30,
+        "H": 18,
+        "I": 18,
+    }
+    for column, width in widths.items():
+        sheet.column_dimensions[column].width = width
+
+
+def _evidence_note(row: dict[str, object | None]) -> str | None:
+    notes: list[str] = []
+    if row.get("pid_page_no"):
+        notes.append(f"P&ID p.{row['pid_page_no']}")
+    if row.get("datasheet_page_no"):
+        notes.append(f"Datasheet p.{row['datasheet_page_no']}")
+    return "; ".join(notes) or None
+
+
+def _embed_row_images(sheet, row: dict[str, object | None], current_row: int) -> None:
     pid_image_path = row.get("pid_image_path")
     datasheet_image_path = row.get("datasheet_image_path")
+    embedded = False
 
-    if pid_image_path and Path(pid_image_path).exists():
-        pid_image = OpenPyxlImage(pid_image_path)
-        pid_image.width = 40
-        pid_image.height = 40
+    if pid_image_path and Path(str(pid_image_path)).exists():
+        pid_image = OpenPyxlImage(str(pid_image_path))
+        pid_image.width = 80
+        pid_image.height = 80
         sheet.add_image(pid_image, f"H{current_row}")
+        embedded = True
 
-    if datasheet_image_path and Path(datasheet_image_path).exists():
-        datasheet_image = OpenPyxlImage(datasheet_image_path)
-        datasheet_image.width = 40
-        datasheet_image.height = 40
+    if datasheet_image_path and Path(str(datasheet_image_path)).exists():
+        datasheet_image = OpenPyxlImage(str(datasheet_image_path))
+        datasheet_image.width = 80
+        datasheet_image.height = 80
         sheet.add_image(datasheet_image, f"I{current_row}")
+        embedded = True
+
+    if embedded:
+        sheet.row_dimensions[current_row].height = 60

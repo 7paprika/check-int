@@ -39,3 +39,46 @@ def test_export_comparison_rows_to_excel_writes_rows_and_highlights_mismatch(tmp
     assert sheet["F3"].value == "SS316"
     assert sheet["E3"].fill.fill_type == "solid"
     assert sheet["E3"].fill.fgColor.rgb.endswith("FFF1B3")
+
+
+def test_export_comparison_rows_to_excel_can_export_mismatch_only_with_summary(tmp_path) -> None:
+    output_path = tmp_path / "integrity-report.xlsx"
+    rows = [
+        {
+            "tag_no": "P-701",
+            "field_name": "service",
+            "status": "matched",
+            "master_value": "Water",
+            "pid_value": "Water",
+            "datasheet_value": "Water",
+        },
+        {
+            "tag_no": "P-702",
+            "field_name": "material",
+            "status": "mismatch",
+            "master_value": "SS316",
+            "pid_value": "CS",
+            "datasheet_value": "SS316",
+        },
+        {
+            "tag_no": "P-703",
+            "field_name": "tag_no",
+            "status": "duplicate_tag",
+            "master_value": "P-703",
+            "pid_value": "P-703 x2",
+            "datasheet_value": "P-703",
+        },
+    ]
+
+    export_comparison_rows_to_excel(rows, output_path, mismatch_only=True)
+
+    workbook = load_workbook(output_path)
+    detail = workbook["Integrity Report"]
+    summary = workbook["Summary"]
+    assert detail.max_row == 3
+    assert detail["A2"].value == "P-702"
+    assert detail["A3"].value == "P-703"
+    assert summary["A1"].value == "Status"
+    assert summary["B1"].value == "Count"
+    summary_counts = {summary.cell(row=i, column=1).value: summary.cell(row=i, column=2).value for i in range(2, summary.max_row + 1)}
+    assert summary_counts == {"Mismatch": 1, "Duplicate Tag": 1}

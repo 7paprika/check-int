@@ -19,6 +19,7 @@
 - 2026-04-24: Phase 2 완료 — MainWindow에 use case 주입, main 기본 use case factory 연결, UI 오류 로그 처리, 43개 테스트 통과
 - 2026-04-24: Phase 3 완료 — pipeline/mapper/formatter evidence metadata 전달, 43개 테스트 통과
 - 2026-04-24: Phase 4 완료 — target-only Tag No 및 duplicate Tag No 검출, 45개 테스트 통과
+- 2026-04-24: Phase 5 완료 — Excel Summary, mismatch-only export, evidence image headers/size 보강, 46개 테스트 통과
 
 ## Phase 1. 품질게이트 안정화
 

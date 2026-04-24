@@ -26,4 +26,8 @@ def test_export_comparison_rows_to_excel_embeds_evidence_images(tmp_path) -> Non
 
     workbook = load_workbook(output_path)
     sheet = workbook["Integrity Report"]
+    assert sheet["H1"].value == "P&ID Evidence"
+    assert sheet["I1"].value == "Datasheet Evidence"
+    assert sheet.column_dimensions["H"].width >= 12
+    assert sheet.row_dimensions[2].height >= 40
     assert len(sheet._images) == 2
