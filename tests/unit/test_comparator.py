@@ -1,5 +1,5 @@
 from check_int.domain.enums import ComparisonStatus, DocumentType
-from check_int.domain.models import EquipmentRecord
+from check_int.domain.models import DocumentEvidence, EquipmentRecord
 from check_int.services.comparator import compare_equipment_records
 from check_int.services.result_formatter import flatten_comparison_results
 
@@ -169,6 +169,14 @@ def test_flatten_comparison_results_returns_rows_for_ui_tables() -> None:
             material="SS304",
         )
     ]
+    pid[0].evidence.append(
+        DocumentEvidence(
+            page_no=2,
+            bbox=(1, 2, 30, 40),
+            image_path="pid-crop.png",
+            raw_text="DESIGN PRESSURE=7 bar",
+        )
+    )
     datasheet = [
         make_record(
             DocumentType.DATASHEET,
@@ -184,6 +192,14 @@ def test_flatten_comparison_results_returns_rows_for_ui_tables() -> None:
             material="SS304",
         )
     ]
+    datasheet[0].evidence.append(
+        DocumentEvidence(
+            page_no=5,
+            bbox=(5, 6, 70, 80),
+            image_path="datasheet-crop.png",
+            raw_text="DESIGN PRESSURE=6 bar",
+        )
+    )
 
     rows = flatten_comparison_results(
         compare_equipment_records(master, pid, datasheet, fields=FIELDS)
@@ -196,6 +212,14 @@ def test_flatten_comparison_results_returns_rows_for_ui_tables() -> None:
     assert pressure_row["master_value"] == "6 bar"
     assert pressure_row["pid_value"] == "7 bar"
     assert pressure_row["datasheet_value"] == "6 bar"
+    assert pressure_row["pid_image_path"] == "pid-crop.png"
+    assert pressure_row["pid_page_no"] == 2
+    assert pressure_row["pid_bbox"] == (1, 2, 30, 40)
+    assert pressure_row["pid_raw_text"] == "DESIGN PRESSURE=7 bar"
+    assert pressure_row["datasheet_image_path"] == "datasheet-crop.png"
+    assert pressure_row["datasheet_page_no"] == 5
+    assert pressure_row["datasheet_bbox"] == (5, 6, 70, 80)
+    assert pressure_row["datasheet_raw_text"] == "DESIGN PRESSURE=6 bar"
 
 
 def test_compare_equipment_records_treats_different_tag_numbers_as_missing_related_documents() -> None:

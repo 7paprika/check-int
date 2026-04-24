@@ -12,6 +12,10 @@ def test_parse_pid_rows_maps_stub_rows_into_equipment_records() -> None:
             "design_pressure": "8 bar",
             "material": "SS304",
             "page_no": 1,
+            "bbox": (10, 20, 110, 120),
+            "image_path": "/tmp/pid-crop.png",
+            "raw_text": "TAG=P-301\nMATERIAL=SS304",
+            "confidence": 0.91,
         }
     ]
 
@@ -21,6 +25,11 @@ def test_parse_pid_rows_maps_stub_rows_into_equipment_records() -> None:
     assert records[0].document_type is DocumentType.PID
     assert records[0].tag_no == "P-301"
     assert records[0].source_file == "pid_stub.json"
+    assert records[0].evidence[0].page_no == 1
+    assert records[0].evidence[0].bbox == (10, 20, 110, 120)
+    assert records[0].evidence[0].image_path == "/tmp/pid-crop.png"
+    assert records[0].evidence[0].raw_text == "TAG=P-301\nMATERIAL=SS304"
+    assert records[0].evidence[0].confidence == 0.91
 
 
 def test_parse_datasheet_rows_maps_stub_rows_into_equipment_records() -> None:

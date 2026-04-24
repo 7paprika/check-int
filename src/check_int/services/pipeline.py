@@ -35,8 +35,16 @@ class DocumentProcessingPipeline:
             for region in regions:
                 raw_text = self.ocr_engine.extract_text(region)
                 result.raw_texts.append(raw_text)
-                result.structured_rows.append(
-                    self.structured_extractor.to_structured_fields(raw_text, document_type)
+                structured_row = self.structured_extractor.to_structured_fields(raw_text, document_type)
+                structured_row.update(
+                    {
+                        "page_no": region.page_no,
+                        "bbox": region.bbox,
+                        "image_path": region.crop_ref,
+                        "raw_text": raw_text,
+                        "region_label": region.label,
+                    }
                 )
+                result.structured_rows.append(structured_row)
 
         return result

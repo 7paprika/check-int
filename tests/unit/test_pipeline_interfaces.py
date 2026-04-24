@@ -42,4 +42,14 @@ def test_document_processing_pipeline_runs_end_to_end_with_stub_adapters() -> No
     assert len(result.pages) == 1
     assert len(result.regions) == 1
     assert result.raw_texts == ["TAG=P-401;SERVICE=Cooling Water"]
-    assert result.structured_rows == [{"tag_no": "P-401", "service": "Cooling Water"}]
+    assert result.structured_rows == [
+        {
+            "tag_no": "P-401",
+            "service": "Cooling Water",
+            "page_no": 1,
+            "bbox": (0, 0, 100, 100),
+            "image_path": "crop-1",
+            "raw_text": "TAG=P-401;SERVICE=Cooling Water",
+            "region_label": "spec_box",
+        }
+    ]
