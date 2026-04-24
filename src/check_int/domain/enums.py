@@ -13,3 +13,4 @@ class ComparisonStatus(str, Enum):
     MISSING_SOURCE = "missing_source"
     MISSING_TARGET = "missing_target"
     UNREVIEWED = "unreviewed"
+    DUPLICATE_TAG = "duplicate_tag"

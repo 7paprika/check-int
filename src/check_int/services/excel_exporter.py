@@ -27,6 +27,7 @@ STATUS_LABELS = {
     "missing_target": "Missing Target",
     "missing_source": "Missing Source",
     "unreviewed": "Unreviewed",
+    "duplicate_tag": "Duplicate Tag",
 }
 
 

@@ -34,6 +34,7 @@ class ResultTableWidget(QTableWidget):
         "missing_target": "Missing Target",
         "missing_source": "Missing Source",
         "unreviewed": "Unreviewed",
+        "duplicate_tag": "Duplicate Tag",
     }
 
     def __init__(self, parent=None) -> None:

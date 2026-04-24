@@ -222,6 +222,42 @@ def test_flatten_comparison_results_returns_rows_for_ui_tables() -> None:
     assert pressure_row["datasheet_raw_text"] == "DESIGN PRESSURE=6 bar"
 
 
+def test_compare_equipment_records_reports_target_only_tags_as_missing_source() -> None:
+    results = compare_equipment_records(
+        [make_record(DocumentType.EQ_LIST, "P-300", service="Water")],
+        [make_record(DocumentType.PID, "P-301", service="Steam")],
+        [make_record(DocumentType.DATASHEET, "P-301", service="Steam")],
+        fields=FIELDS,
+    )
+
+    extra = next(result for result in results if result.tag_no == "P-301")
+    assert len(extra.comparisons) == 1
+    comparison = extra.comparisons[0]
+    assert comparison.field_name == "tag_no"
+    assert comparison.status is ComparisonStatus.MISSING_SOURCE
+    assert comparison.master_value is None
+    assert comparison.pid_value == "P-301"
+    assert comparison.datasheet_value == "P-301"
+
+
+def test_compare_equipment_records_reports_duplicate_target_tags() -> None:
+    results = compare_equipment_records(
+        [make_record(DocumentType.EQ_LIST, "P-400", service="Water")],
+        [
+            make_record(DocumentType.PID, "P-400", service="Water"),
+            make_record(DocumentType.PID, "P-400", service="Steam"),
+        ],
+        [make_record(DocumentType.DATASHEET, "P-400", service="Water")],
+        fields=FIELDS,
+    )
+
+    duplicate_row = next(
+        comparison for comparison in results[0].comparisons if comparison.field_name == "tag_no"
+    )
+    assert duplicate_row.status is ComparisonStatus.DUPLICATE_TAG
+    assert duplicate_row.pid_value == "P-400 x2"
+
+
 def test_compare_equipment_records_treats_different_tag_numbers_as_missing_related_documents() -> None:
     master = [make_record(DocumentType.EQ_LIST, "P-200", service="Water", material="SS316")]
     pid = [make_record(DocumentType.PID, "P-201", service="Water", material="SS316")]
