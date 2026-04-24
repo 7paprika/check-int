@@ -20,6 +20,7 @@
 - 2026-04-24: Phase 3 완료 — pipeline/mapper/formatter evidence metadata 전달, 43개 테스트 통과
 - 2026-04-24: Phase 4 완료 — target-only Tag No 및 duplicate Tag No 검출, 45개 테스트 통과
 - 2026-04-24: Phase 5 완료 — Excel Summary, mismatch-only export, evidence image headers/size 보강, 46개 테스트 통과
+- 2026-04-24: Phase 6 완료 — Linux ELF/Windows native build 구분 및 모델 포함/미포함 배포 프로파일 문서화, 47개 테스트 통과
 
 ## Phase 1. 품질게이트 안정화
 

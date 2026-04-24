@@ -29,6 +29,12 @@
 - 모델 파일과 설정 파일을 `--add-data`로 포함
 - 출력 exe 크기 증가 예상
 - 첫 실행 시 임시 압축 해제 경로 정책 확인 필요
+- Linux에서 생성한 산출물은 ELF 실행파일이므로 Windows 배포물로 사용할 수 없음
+
+### 빌드 프로파일
+- 모델 미포함 빌드: 앱 코드와 기본 런타임만 묶고, `models/` 폴더는 현장 PC에 별도 배치한다. 초기 검증과 작은 배포 파일에 적합하다.
+- 모델 포함 빌드: YOLO/PaddleOCR/structured extraction 자산을 PyInstaller `datas` 또는 배포 폴더에 포함한다. 폐쇄망 반입은 단순하지만 산출물 크기와 빌드 시간이 증가한다.
+- Windows native build: 실제 `.exe`는 Windows 10/11 64-bit 환경 또는 Windows VM에서 PyInstaller를 실행해 생성한다.
 
 ## 6. 운영상 유의점
 - 증빙 crop 이미지 캐시 저장 위치를 명확히 해야 함

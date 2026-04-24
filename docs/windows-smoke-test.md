@@ -4,7 +4,8 @@
 폐쇄망 Windows 환경에서 `check-int` 패키징 산출물이 최소 기능을 수행하는지 빠르게 확인합니다.
 
 ## 사전 준비
-- `dist/check-int.exe` 또는 동등한 패키징 산출물
+- Windows native 환경에서 빌드한 `dist/check-int.exe` 또는 동등한 패키징 산출물
+- Linux에서 PyInstaller로 만든 `dist/check-int`는 ELF 실행파일이며 Windows `.exe`가 아닙니다. Linux 빌드는 spec/import 검증용으로만 사용합니다.
 - 샘플 EQ List `.xlsx`
 - 샘플 P&ID `.pdf`
 - 샘플 Datasheet `.pdf`
