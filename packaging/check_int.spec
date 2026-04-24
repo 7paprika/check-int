@@ -6,6 +6,8 @@ from PyInstaller.utils.hooks import collect_submodules
 project_root = Path(SPEC).resolve().parent.parent
 src_root = project_root / 'src'
 docs_root = project_root / 'docs'
+assets_root = project_root / 'assets'
+icon_path = assets_root / 'check-int.ico'
 
 hiddenimports = collect_submodules('check_int')
 
@@ -37,4 +39,5 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,
+    icon=str(icon_path),
 )
